@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PyTodo Pro{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ total }}</div>
+        <div class="stat-label">Total Tasks</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ open_tasks }}</div>
+        <div class="stat-label">Open</div>
+    </div>
+    <div class="stat-card stat-overdue">
+        <div class="stat-value">{{ overdue }}</div>
+        <div class="stat-label">Overdue</div>
+    </div>
+    <div class="stat-card stat-soon">
+        <div class="stat-value">{{ due_soon }}</div>
+        <div class="stat-label">Due Soon</div>
+    </div>
+    <div class="stat-card stat-done">
+        <div class="stat-value">{{ completed_this_week }}</div>
+        <div class="stat-label">Completed (last 7 days)</div>
+    </div>
+</div>
+{% endblock %}

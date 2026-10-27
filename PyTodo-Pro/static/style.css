@@ -1,0 +1,79 @@
+* { box-sizing: border-box; }
+body {
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #f5f6f8;
+    color: #1d1d1f;
+    margin: 0;
+}
+.topnav {
+    background: #1B3A5C;
+    color: #fff;
+    padding: 0.9rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.topnav .brand { color: #fff; font-weight: 700; font-size: 1.2rem; text-decoration: none; }
+.nav-links { display: flex; gap: 1.2rem; align-items: center; }
+.nav-links a { color: #cfe2f7; text-decoration: none; }
+.nav-links a:hover { color: #fff; }
+.nav-user { color: #8fb0d6; font-size: 0.9rem; }
+
+.container { max-width: 920px; margin: 2rem auto; padding: 0 1.5rem; }
+
+.auth-card {
+    max-width: 360px;
+    margin: 3rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.auth-card h1 { margin-top: 0; font-size: 1.4rem; }
+.auth-card label, .task-form label { display: block; margin: 0.8rem 0 0.3rem; font-size: 0.9rem; font-weight: 600; }
+.auth-card input, .task-form input, .task-form select, .task-form textarea {
+    width: 100%; padding: 0.55rem; border: 1px solid #d0d0d5; border-radius: 6px; font-size: 0.95rem;
+}
+.hint { font-weight: 400; color: #8d6e76; font-size: 0.8rem; }
+.auth-card button, .task-form button {
+    margin-top: 1.2rem; padding: 0.6rem 1.2rem; border: none; background: #1B3A5C; color: #fff;
+    border-radius: 6px; cursor: pointer; font-size: 0.95rem;
+}
+.muted { margin-top: 1rem; font-size: 0.9rem; color: #666; }
+.error { background: #fdecea; color: #b3261e; padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.9rem; }
+
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.btn, .btn-secondary {
+    display: inline-block; padding: 0.55rem 1.1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem;
+}
+.btn { background: #1B3A5C; color: #fff; }
+.btn-secondary { background: #eee; color: #333; margin-left: 0.6rem; }
+
+.filters { display: flex; gap: 0.6rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.filters select, .filters input { padding: 0.5rem; border: 1px solid #d0d0d5; border-radius: 6px; }
+.filters button { padding: 0.5rem 1rem; border: none; background: #2C6B8F; color: #fff; border-radius: 6px; cursor: pointer; }
+
+.task-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.task-table th, .task-table td { padding: 0.7rem 0.8rem; text-align: left; border-bottom: 1px solid #eee; font-size: 0.92rem; }
+.task-table tr.done .title-cell { text-decoration: line-through; color: #999; }
+.check-btn { border: 1px solid #ccc; background: #fff; border-radius: 50%; width: 1.8rem; height: 1.8rem; cursor: pointer; }
+.actions a, .link-btn { color: #2C6B8F; text-decoration: none; font-size: 0.85rem; margin-right: 0.6rem; background: none; border: none; cursor: pointer; padding: 0; }
+.empty { text-align: center; color: #999; font-style: italic; padding: 1.5rem !important; }
+
+.badge { padding: 0.2rem 0.55rem; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
+.badge-overdue { background: #fdecea; color: #b3261e; }
+.badge-due-today { background: #fdecea; color: #b3261e; }
+.badge-due-soon { background: #fff4e5; color: #a15c00; }
+.badge-upcoming { background: #eaf6ec; color: #1e6b34; }
+.badge-no-due-date { background: #eee; color: #666; }
+.badge-done { background: #eee; color: #666; }
+
+.task-form { background: #fff; padding: 1.5rem; border-radius: 10px; max-width: 480px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+.stat-card { background: #fff; border-radius: 10px; padding: 1.2rem; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.stat-value { font-size: 2rem; font-weight: 700; color: #1B3A5C; }
+.stat-label { font-size: 0.85rem; color: #666; margin-top: 0.3rem; }
+.stat-overdue .stat-value { color: #b3261e; }
+.stat-soon .stat-value { color: #a15c00; }
+.stat-done .stat-value { color: #1e6b34; }

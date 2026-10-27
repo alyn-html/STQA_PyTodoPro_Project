@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Tasks — PyTodo Pro{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>My Tasks</h1>
+    <a class="btn" href="{{ url_for('new_task') }}">+ New Task</a>
+</div>
+
+<form method="get" class="filters">
+    <select name="category" onchange="this.form.submit()">
+        <option value="">All categories</option>
+        {% for c in categories %}
+        <option value="{{ c['name'] }}" {% if category_filter == c['name'] %}selected{% endif %}>{{ c['name'] }}</option>
+        {% endfor %}
+    </select>
+    <select name="status" onchange="this.form.submit()">
+        <option value="">All statuses</option>
+        <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
+        <option value="done" {% if status_filter == 'done' %}selected{% endif %}>Done</option>
+    </select>
+    <input type="text" name="q" placeholder="Search title..." value="{{ q }}">
+    <button type="submit">Filter</button>
+</form>
+
+<table class="task-table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Due Date</th>
+            <th>Urgency</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tasks %}
+        <tr class="{{ 'done' if t.done else '' }}">
+            <td>
+                <form method="post" action="{{ url_for('toggle_task', task_id=t.id) }}">
+                    <button type="submit" class="check-btn">{{ '✓' if t.done else '○' }}</button>
+                </form>
+            </td>
+            <td class="title-cell">{{ t.title|safe }}</td>
+            <td>{{ t.category or '—' }}</td>
+            <td>{{ t.due_date or '—' }}</td>
+            <td><span class="badge badge-{{ t.urgency|lower|replace(' ', '-') }}">{{ t.urgency }}</span></td>
+            <td class="actions">
+                <a href="{{ url_for('edit_task', task_id=t.id) }}">Edit</a>
+                <form method="post" action="{{ url_for('delete_task_web', task_id=t.id) }}" onsubmit="return confirm('Delete this task?');">
+                    <button type="submit" class="link-btn">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="empty">No tasks match your filters.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

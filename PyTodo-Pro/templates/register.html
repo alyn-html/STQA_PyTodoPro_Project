@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Register — PyTodo Pro{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h1>Create an account</h1>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <form method="post">
+        <label>Username <span class="hint">(3-20 chars, letters/numbers/underscore)</span></label>
+        <input type="text" name="username" required>
+        <label>Password <span class="hint">(min 8 characters)</span></label>
+        <input type="password" name="password" required>
+        <button type="submit">Register</button>
+    </form>
+    <p class="muted">Already have an account? <a href="{{ url_for('login_page') }}">Log in</a></p>
+</div>
+{% endblock %}
