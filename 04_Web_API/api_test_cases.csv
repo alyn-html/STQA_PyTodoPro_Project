@@ -1,0 +1,13 @@
+Test Case ID,Feature,Method,Endpoint,Precondition,Test Data,Expected Result,Actual Result,Status,Remarks
+API-001,Web access,GET,/,No authenticated session,None,Redirect to login page,302 FOUND with Location /login,Pass,Unauthenticated home-page access redirected
+API-002,Category access,GET,/api/categories,No authenticated session,None,Confirm access policy; project README broadly states API endpoints require authentication,200 OK with JSON categories,Needs Review,Confirm whether categories are intentionally public
+API-003,Task authentication,GET,/api/tasks,No authenticated session,None,Reject unauthenticated request,401 UNAUTHORIZED with authentication required error,Pass,Authentication enforced for task listing
+API-004,Dashboard authentication,GET,/api/dashboard,No authenticated session,None,Reject unauthenticated request,401 UNAUTHORIZED with authentication required error,Pass,Authentication enforced for dashboard
+API-005,Login,POST,/api/login,Valid Siti account,Valid credentials,Authenticate user and establish session,200 OK with id 1 and username Siti,Pass,Session cookie saved locally
+API-006,Task listing,GET,/api/tasks,Authenticated as Siti,No existing test task yet,Return authenticated user's task list,200 OK with empty JSON array,Pass,Observed before task creation
+API-007,Task creation,POST,/api/tasks,Authenticated as Siti,"title=API Test Task; category_id=1; due_date=2026-12-31",Create task and return task details,201 CREATED with task ID 5,Pass,Task created successfully
+API-008,Task listing,GET,/api/tasks,Authenticated as Siti,Task ID 5 exists,Return task in task list,200 OK and task ID 5 returned,Pass,Created task appeared in list
+API-009,Single task retrieval,GET,/api/tasks/5,Authenticated as Siti,Task ID 5 exists,Return requested task details,200 OK with task ID 5 details,Pass,Returned expected task
+API-010,Task update,PUT,/api/tasks/5,Authenticated as Siti,description=Updated through API for verification,Update description and return updated task,200 OK with updated description,Pass,Other task fields remained present
+API-011,Input validation,POST,/api/tasks,Authenticated as Siti,Description supplied without title,Reject request with clear validation error,400 BAD REQUEST with title is required,Pass,Missing title rejected
+API-012,Category filtering,GET,/api/tasks?category=Work,Authenticated as Siti,Category=Work,Return tasks matching Work category,200 OK with task ID 5 in Work category,Pass,Filter returned expected task
