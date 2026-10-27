@@ -1,0 +1,10 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local application database
+PyTodo-Pro/pytodo_pro.db
+
+# Local test session cookies
+own_cookies.txt
