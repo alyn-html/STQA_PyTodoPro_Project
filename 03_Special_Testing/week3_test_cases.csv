@@ -1,0 +1,86 @@
+﻿Test Case ID,Feature / Requirement,Technique / Test Type,WCAG / Heuristic,Objective,Preconditions,Test Data,Steps,Expected Result,Actual Result,Status,Evidence,Defect ID
+TC-GUI-001,Login page,GUI,—,"Login page shows heading, username/password fields, Log in button and Register link",Logged out,—,"1. Open /login
+2. Inspect page elements",All elements present; tab title 'Log in — PyTodo Pro',All present; title 'Log in — PyTodo Pro',Pass,HTML inspection (gui_check.py),
+TC-GUI-002,Navigation bar,GUI,—,Logged-out nav shows only brand link,Logged out,—,"1. Open /login
+2. Inspect nav",Only 'PyTodo Pro' link,Only 'PyTodo Pro',Pass,HTML inspection (gui_check.py),
+TC-GUI-003,Navigation bar,GUI,—,"Logged-in nav shows Tasks, Dashboard, username and Log out",Logged in as alice,—,"1. Log in
+2. Inspect nav","Tasks, Dashboard, 'alice', Log out","Tasks, Dashboard, alice, Log out",Pass,HTML inspection (gui_check.py),
+TC-GUI-004,Login error message,GUI,Nielsen #9,Wrong password shows an error,Logged in as alice (account exists),alice / wrong,1. Submit login form,'Invalid username or password.' shown,'Invalid username or password.',Pass,HTML inspection (gui_check.py),
+TC-GUI-005,Registration validation message,GUI,Nielsen #9,Invalid username shows rule-based message,Logged out,ab / 10-char password,"1. Open /register
+2. Submit",Message explaining 3–20 chars rule,"'Username must be 3-20 characters (letters, numbers, underscore).'",Pass,HTML inspection (gui_check.py),
+TC-GUI-006,Registration hint vs behaviour,GUI / Consistency,Nielsen #4,Hint '(min 8 characters)' matches behaviour,Logged out,alice / abcd1234 (8 chars),1. Submit register form,"Account created, redirect to /",Rejected: 'Password must be at least 8 characters.' — message contradicts input,Fail,HTML inspection (gui_check.py),DEF-002
+TC-GUI-007,New Task form,GUI,—,"Form shows Title, Description, Category, Due Date (date picker), Create Task, Cancel",Logged in as alice,—,1. Click '+ New Task',All fields; due date input type='date'; button 'Create Task',As expected,Pass,HTML inspection (gui_check.py),
+TC-GUI-008,Edit Task form,GUI,—,"Edit form is pre-filled, button reads 'Save Changes', Cancel returns to list","Logged in as alice, task exists",Task 1,"1. Click Edit on a task
+2. Click Cancel",Fields pre-filled; 'Save Changes'; Cancel → /,As expected,Pass,HTML inspection (gui_check.py),
+TC-GUI-009,New Task — title validation,GUI / Input validation,Nielsen #5,Whitespace-only title is rejected,Logged in as alice,title = '   ',"1. Enter 3 spaces in Title
+2. Create Task",Error shown; task not created,Browser 'required' passes; server strips to '' and saves it. Blank row appears in list,Fail,HTML inspection (gui_check.py),DEF-008
+TC-GUI-010,Task list — title display,GUI / Output encoding,—,Title containing HTML characters is shown as typed,Logged in as alice,title = '<b>Bold</b><i>x</i>',"1. Create task
+2. View list",Literal text '<b>Bold</b><i>x</i>' shown,Rendered as bold/italic HTML (template uses |safe) — also a stored-XSS risk for Week 5,Fail,HTML inspection (gui_check.py),DEF-007
+TC-GUI-011,Toggle complete,GUI,—,"Completing a task updates row style, icon and badge","Logged in as alice, open task",Task 3,1. Click ○ on task,"Row class 'done', icon ✓, badge 'Done'",As expected,Pass,HTML inspection (gui_check.py),
+TC-GUI-012,Delete confirmation,GUI,Nielsen #5,Delete asks for confirmation before removing,"Logged in as alice, task exists",Any task,"1. Click Delete
+2. Click Cancel in dialog
+3. Repeat, click OK",Cancel keeps task; OK deletes,Not run in a browser (confirm() handler present in markup),Not Run,Screenshot needed,
+TC-GUI-013,Filters and search,GUI,Nielsen #1,Selected filters and search text persist after submit,Logged in as alice,"category=Study, status=Open, q=Today","1. Choose filters, type search
+2. Submit",Selections and text remain visible,Study + Open selected; 'Today' kept in box,Pass,HTML inspection (gui_check.py),
+TC-GUI-014,Urgency badge,GUI,—,Task due today shows 'Due Today' badge,Logged in as alice,due = today (2026-11-24),"1. Create task due today
+2. View list",Badge 'Due Today',Badge 'Overdue',Fail,HTML inspection (gui_check.py),DEF-001
+TC-GUI-015,Dashboard counters,GUI,—,Dashboard counters match task list,"Logged in as alice; 3 open tasks, 1 due today",—,1. Open /dashboard,Overdue = 0 (task due today is not overdue),Overdue = 1,Fail,HTML inspection (gui_check.py),DEF-001
+TC-GUI-016,Log out,GUI / Navigation,—,Log out ends session and protects pages,Logged in as alice,—,"1. Click Log out
+2. Open /",Redirect to /login both times,302 → /login both times,Pass,HTML inspection (gui_check.py),
+TC-USA-001,Registration form,Usability,"Nielsen #5, #7",Entered username is kept after a validation error,Logged out,ab / valid password,1. Submit invalid registration,Username field still filled in,Username field cleared — user must retype,Fail,HTML inspection (gui_check.py),DEF-009
+TC-USA-002,Task list empty state,Usability,Nielsen #2,Empty-state message fits the situation,"New user, no tasks, no filters",—,"1. Log in as new user
+2. View list",Message like 'No tasks yet — create one','No tasks match your filters.' even with no filters,Fail,HTML inspection (gui_check.py),DEF-013
+TC-USA-003,Field requirements shown,Usability,Nielsen #5,Rules shown before user types,Logged out,—,1. Open /register,Username and password hints visible,Both hints visible next to labels,Pass,HTML inspection (gui_check.py),
+TC-USA-004,Invalid edit URL,Usability,"Nielsen #1, #9",User told when a task cannot be found,Logged in as alice,/tasks/999/edit,1. Open URL,Message such as 'Task not found',Silent redirect to list (302) — no feedback,Fail,HTML inspection (gui_check.py),DEF-014
+TC-USA-005,Page titles,Usability / Consistency,WCAG 2.4.2,"Each page has a distinct, descriptive title",Logged in as alice,—,1. Visit each page,Unique title per page,Log in / Register / Tasks / New Task / Edit Task / Dashboard — PyTodo Pro,Pass,HTML inspection (gui_check.py),
+TC-USA-006,Visual consistency,Usability / Consistency,Nielsen #4,"Buttons, badges and spacing look consistent across pages",Running app with static/style.css,—,"1. Visit every page
+2. Compare styling",Consistent look,Not run — static/style.css not in the files provided (returned 404 here),Not Run,Screenshot needed,
+TC-ACC-001,Page language,Accessibility,WCAG 3.1.1 (A),<html> declares language,—,—,1. Inspect <html>,lang='en',lang='en',Pass,HTML inspection (gui_check.py),
+TC-ACC-002,Form labels,Accessibility,"WCAG 1.3.1, 4.1.2 (A)",Every input is programmatically linked to its label,—,"Login, Register, Task forms","1. Inspect <label> and <input>
+2. Click label text",Label has for= matching input id (clicking label focuses field),No for/id pairs on any form — screen readers announce unlabeled fields,Fail,HTML inspection (gui_check.py),DEF-006
+TC-ACC-003,Filter and search controls,Accessibility,"WCAG 1.3.1, 3.3.2 (A)",Filters and search box have accessible names,Logged in as alice,—,1. Inspect filter selects and search input,Each has a label or aria-label,No labels; search relies on placeholder only,Fail,HTML inspection (gui_check.py),DEF-012
+TC-ACC-004,Complete/undo button,Accessibility,WCAG 4.1.2 (A),Toggle button has a meaningful accessible name,Logged in as alice,—,1. Inspect .check-btn,Name like 'Mark as done',Name is just '○' / '✓' symbol,Fail,HTML inspection (gui_check.py),DEF-010
+TC-ACC-005,Filter auto-submit,Accessibility,WCAG 3.2.2 (A),Changing a select does not change context unexpectedly,Logged in as alice,—,"1. Using keyboard, arrow through category options",Page reloads only when user presses Filter,onchange='this.form.submit()' reloads on every change,Fail,HTML inspection (gui_check.py),DEF-011
+TC-ACC-006,Table headers,Accessibility,WCAG 1.3.1 (A),All table columns have header text,Logged in as alice,—,1. Inspect <th>,Every column has a header,1st (toggle) and last (actions) headers are empty,Fail,HTML inspection (gui_check.py),DEF-015
+TC-ACC-007,Information by colour,Accessibility,WCAG 1.4.1 (A),Urgency not conveyed by colour alone,Logged in as alice,—,1. Inspect badges,Badge has text label,"Badges show text (Overdue, Due Soon…)",Pass,HTML inspection (gui_check.py),
+TC-ACC-008,Error identification,Accessibility,WCAG 3.3.1 (A),Errors are described in text,Logged out,Invalid login,1. Submit bad login,Error in text,Text error shown (not linked to a field via aria-describedby — improvement),Pass,HTML inspection (gui_check.py),
+TC-ACC-009,Keyboard access,Accessibility,"WCAG 2.1.1, 2.4.7 (A/AA)",All actions usable by keyboard with visible focus,Logged in as alice,—,"1. Use Tab/Shift+Tab/Enter/Space only
+2. Register, create, toggle, delete, filter, log out",All reachable; focus always visible,,Not Run,Screenshot needed,
+TC-ACC-010,Colour contrast,Accessibility,WCAG 1.4.3 (AA),Text and badge contrast ≥ 4.5:1,Logged in as alice,—,"1. Check badges, hints, muted text with a contrast checker (e.g. WAVE / DevTools)",All ≥ 4.5:1,,Not Run,Contrast tool output,
+TC-ACC-011,Zoom / reflow,Accessibility,"WCAG 1.4.4, 1.4.10 (AA)",Usable at 200% zoom and 320 px width,Logged in as alice,—,"1. Zoom to 200%
+2. Check list table and forms",No loss of content or function,,Not Run,Screenshot needed,
+TC-CMP-001,Cross-browser smoke flow,Compatibility,—,"Core flow works and renders correctly in Chrome (latest, desktop)",App running at 127.0.0.1:5000; fresh DB,user cmp_user / Passw0rd!x; task due tomorrow,"1. Register
+2. Create task using date picker
+3. Toggle done
+4. Filter by status
+5. Delete (confirm dialog)
+6. Open Dashboard
+7. Log out",All steps work; date picker usable; layout not broken,,Not Run,Screenshot per step,
+TC-CMP-002,Cross-browser smoke flow,Compatibility,—,"Core flow works and renders correctly in Firefox (latest, desktop)",App running at 127.0.0.1:5000; fresh DB,user cmp_user / Passw0rd!x; task due tomorrow,"1. Register
+2. Create task using date picker
+3. Toggle done
+4. Filter by status
+5. Delete (confirm dialog)
+6. Open Dashboard
+7. Log out",All steps work; date picker usable; layout not broken,,Not Run,Screenshot per step,
+TC-CMP-003,Cross-browser smoke flow,Compatibility,—,"Core flow works and renders correctly in Edge (latest, desktop)",App running at 127.0.0.1:5000; fresh DB,user cmp_user / Passw0rd!x; task due tomorrow,"1. Register
+2. Create task using date picker
+3. Toggle done
+4. Filter by status
+5. Delete (confirm dialog)
+6. Open Dashboard
+7. Log out",All steps work; date picker usable; layout not broken,,Not Run,Screenshot per step,
+TC-CMP-004,Cross-browser smoke flow,Compatibility,—,"Core flow works and renders correctly in Safari (macOS/iOS, if available)",App running at 127.0.0.1:5000; fresh DB,user cmp_user / Passw0rd!x; task due tomorrow,"1. Register
+2. Create task using date picker
+3. Toggle done
+4. Filter by status
+5. Delete (confirm dialog)
+6. Open Dashboard
+7. Log out",All steps work; date picker usable; layout not broken,,Not Run,Screenshot per step,
+TC-CMP-005,Cross-browser smoke flow,Compatibility,—,Core flow works and renders correctly in Mobile viewport 375×667 (DevTools or phone),App running at 127.0.0.1:5000; fresh DB,user cmp_user / Passw0rd!x; task due tomorrow,"1. Register
+2. Create task using date picker
+3. Toggle done
+4. Filter by status
+5. Delete (confirm dialog)
+6. Open Dashboard
+7. Log out",All steps work; date picker usable; layout not broken,,Not Run,Screenshot per step,
