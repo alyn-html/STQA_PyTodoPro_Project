@@ -19,7 +19,10 @@ every test creates its own temporary SQLite database.
 │   ├── test_web.py              AT-W-*   pages/forms, usability & HTML accessibility (TC-BB, TC-USA, TC-ACC)
 │   ├── test_ui_selenium.py      AT-UI-*  headless Chrome journeys + axe-core scan (TC-GUI, TC-ACC)
 │   └── vendor/axe.min.js        axe-core 4.14.1 (MPL-2.0), same version as the Week 3 scan
-├── tools/make_fixed_copy.py  builds a throw-away "all defects fixed" copy for oracle validation
+├── tools/
+│   ├── make_fixed_copy.py       builds a throw-away "all defects fixed" copy for oracle validation
+│   ├── build_manual_matrix.py   builds reports/manual_to_automated.csv (one row per manual case)
+│   └── manual_cases/            copies of the Week 1/2/4/5 test-case sheets + Week 3/5 IDs from findings
 └── reports/                  execution evidence (logs, JUnit XML, HTML reports, coverage, traceability.csv)
 ```
 
@@ -53,11 +56,11 @@ If Chrome cannot start, UI tests are **skipped**, not failed. `SELENIUM_HEADED=1
 
 | Purpose | Command | Tests | Time* |
 |---|---|---|---|
-| Smoke (every change) | `pytest -m smoke` | 47 | ~6 s |
-| Focused regression (every fix / before merge) | `pytest -m regression` | 97 | ~16 s |
-| Full suite + coverage + traceability | `pytest --cov=app --cov=helpers --cov-branch --traceability=reports/traceability.csv` | 125 | ~21 s |
-| One layer | `pytest -m unit` / `-m api` / `-m web` / `-m ui` | 35 / 38 / 37 / 15 | |
-| Show open defects as real failures | `pytest -m known_defect --runxfail` | 36 | ~7 s |
+| Smoke (every change) | `pytest -m smoke` | 47 | ~8 s |
+| Focused regression (every fix / before merge) | `pytest -m regression` | 100 | ~18 s |
+| Full suite + coverage + traceability | `pytest --cov=app --cov=helpers --cov-branch --traceability=reports/traceability.csv` | 133 | ~21 s |
+| One layer | `pytest -m unit` / `-m api` / `-m web` / `-m ui` | 42 / 38 / 38 / 15 | |
+| Show open defects as real failures | `pytest -m known_defect --runxfail` | 37 | ~7 s |
 | HTML + JUnit evidence | add `--html=reports/x.html --self-contained-html --junitxml=reports/x.xml` | | |
 
 \* headless Chrome on Linux; your machine will differ.
@@ -71,12 +74,19 @@ If Chrome cannot start, UI tests are **skipped**, not failed. `SELENIUM_HEADED=1
 | `XPASS(strict)` → **FAILED** | a known defect now behaves correctly | retest manually, close the defect, delete its `known_defect(...)` line |
 | `FAILED` (anything else) | **new regression** | investigate and log a defect |
 
-## Filling in the manual test IDs
+## Traceability files
 
-`tests/manual_ids.py` holds placeholders such as `"TC-BB-?? Login decision table"` for the black-box
-and some Week 3 cases, because the findings reports did not say which ID tests which behaviour.
-Replace each value with the real ID, then re-run with `--traceability=reports/traceability.csv`.
-The traceability matrix updates itself.
+```bash
+pytest --traceability=reports/traceability.csv     # one row per automated test case
+python tools/build_manual_matrix.py                 # one row per manual test case -> reports/manual_to_automated.csv
+```
+
+`build_manual_matrix.py` reads the sheets in `tools/manual_cases/` by default. Pass paths to use the
+originals instead, e.g. `python tools/build_manual_matrix.py ../01_Black_Box/black_box_test_cases.csv ...`.
+
+TC-BB, TC-WB, API and SEC IDs are final. The Week 3 sheet was not available, so `tests/manual_ids.py`
+still has `TC-GUI-??` / `TC-ACC-??` placeholders. Replace them with the real IDs and re-run both
+commands.
 
 ## Oracle validation (optional)
 
