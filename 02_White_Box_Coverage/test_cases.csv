@@ -1,0 +1,87 @@
+﻿Test Case ID,Feature / Requirement,Technique / Test Type,Coverage Target,Objective,Preconditions,Test Data,Steps,Expected Result,Actual Result,Status,Evidence,Defect ID
+TC-WB-001,compute_urgency() — urgency classification,Branch,D2 (not due) = True,No due date returns 'No due date',helpers.py importable; no app/DB needed,"due=None, today=2026-11-24","1. Call compute_urgency() with the test data
+2. Compare return value with expected",'No due date','No due date',Pass,pytest: test_whitebox.py::test_TC_WB_001,
+TC-WB-002,compute_urgency() — urgency classification,Branch,D2 = True (falsy empty string),Empty string treated as no due date,helpers.py importable; no app/DB needed,"due='', today=2026-11-24","1. Call compute_urgency() with the test data
+2. Compare return value with expected",'No due date','No due date',Pass,pytest: test_whitebox.py::test_TC_WB_002,
+TC-WB-003,compute_urgency() — urgency classification,Branch,D3 (due<=today) = True,Past date is Overdue,helpers.py importable; no app/DB needed,due='2026-11-23',"1. Call compute_urgency() with the test data
+2. Compare return value with expected",'Overdue','Overdue',Pass,pytest: test_whitebox.py::test_TC_WB_003,
+TC-WB-004,compute_urgency() — urgency classification,Branch / Path,D3 = True at boundary (due == today),Date equal to today returns 'Due Today' (spec),helpers.py importable; no app/DB needed,due='2026-11-24',"1. Call compute_urgency() with the test data
+2. Compare return value with expected",'Due Today','Overdue' — no code path returns 'Due Today'; <= captures today,Fail,pytest: test_whitebox.py::test_TC_WB_004,DEF-002
+TC-WB-005,compute_urgency() — urgency classification,Branch,"D3 = False, D4 (delta<=2) = True",1 day away is Due Soon,helpers.py importable; no app/DB needed,due='2026-11-25',"1. Call compute_urgency() with the test data
+2. Compare return value with expected",'Due Soon','Due Soon',Pass,pytest: test_whitebox.py::test_TC_WB_005,
+TC-WB-006,compute_urgency() — urgency classification,Branch,D4 = True at boundary (delta=2),2 days away is Due Soon,helpers.py importable; no app/DB needed,due='2026-11-26',"1. Call compute_urgency() with the test data
+2. Compare return value with expected",'Due Soon','Due Soon',Pass,pytest: test_whitebox.py::test_TC_WB_006,
+TC-WB-007,compute_urgency() — urgency classification,Branch,D4 = False (delta=3),3 days away is Upcoming,helpers.py importable; no app/DB needed,due='2026-11-27',"1. Call compute_urgency() with the test data
+2. Compare return value with expected",'Upcoming','Upcoming',Pass,pytest: test_whitebox.py::test_TC_WB_007,
+TC-WB-008,compute_urgency() — urgency classification,Branch,D1 (today is None) = True,Default today=date.today() is used when not injected,helpers.py importable; no app/DB needed,"due=today+10 (real clock), today omitted","1. Call compute_urgency() with the test data
+2. Compare return value with expected",'Upcoming','Upcoming',Pass,pytest: test_whitebox.py::test_TC_WB_008,
+TC-WB-009,compute_urgency() — urgency classification,Statement / Robustness,strptime exception path,Malformed date string behaviour,helpers.py importable; no app/DB needed,due='19999-06-14' (5-digit year from black-box DEF-001),"1. Call compute_urgency() with the test data
+2. Compare return value with expected",ValueError raised (function does not handle it — callers must validate),ValueError: time data '19999-06-14' does not match format '%Y-%m-%d'. Confirms crash source of DEF-001,Pass,pytest: test_whitebox.py::test_TC_WB_009,DEF-001
+TC-WB-010,is_valid_password() — password rule,Branch,D1 (isinstance) = False,Non-string None rejected,helpers.py importable; no app/DB needed,password=None,"1. Call is_valid_password() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_010,
+TC-WB-011,is_valid_password() — password rule,Branch,D1 = False (int),Non-string number rejected,helpers.py importable; no app/DB needed,password=12345678 (int),"1. Call is_valid_password() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_011,
+TC-WB-012,is_valid_password() — password rule,Branch / BVA,"D2 (len>8) = False, len 7",7 chars rejected,helpers.py importable; no app/DB needed,'abc1234' (7),"1. Call is_valid_password() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_012,
+TC-WB-013,is_valid_password() — password rule,Branch / BVA,"D2 at boundary, len 8",8 chars accepted ('at least 8'),helpers.py importable; no app/DB needed,'abcd1234' (8),"1. Call is_valid_password() with the test data
+2. Compare return value with expected",True,False — uses len > 8 instead of >= 8,Fail,pytest: test_whitebox.py::test_TC_WB_013,DEF-006
+TC-WB-014,is_valid_password() — password rule,Branch / BVA,"D2 = True, len 9",9 chars accepted,helpers.py importable; no app/DB needed,'abcd12345' (9),"1. Call is_valid_password() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_014,
+TC-WB-015,is_valid_password() — password rule,Branch,"D2 = False, len 0",Empty string rejected,helpers.py importable; no app/DB needed,'',"1. Call is_valid_password() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_015,
+TC-WB-016,is_valid_username() — username rule,Branch,D1 (isinstance) = False,Non-string rejected,helpers.py importable; no app/DB needed,username=123,"1. Call is_valid_username() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_016,
+TC-WB-017,is_valid_username() — username rule,Branch / BVA,"D2 (3<=len<=20) = False, len 2",Too short rejected,helpers.py importable; no app/DB needed,'ab',"1. Call is_valid_username() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_017,
+TC-WB-018,is_valid_username() — username rule,Branch / BVA,"D2 = True lower bound, len 3",Minimum length accepted,helpers.py importable; no app/DB needed,'abc',"1. Call is_valid_username() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_018,
+TC-WB-019,is_valid_username() — username rule,Branch / BVA,"D2 = True upper bound, len 20",Maximum length accepted,helpers.py importable; no app/DB needed,'a'*20,"1. Call is_valid_username() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_019,
+TC-WB-020,is_valid_username() — username rule,Branch / BVA,"D2 = False, len 21",Too long rejected,helpers.py importable; no app/DB needed,'a'*21,"1. Call is_valid_username() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_020,
+TC-WB-021,is_valid_username() — username rule,Condition,D3: isalnum True and c=='_' True across chars,"Letters, digits and underscore accepted",helpers.py importable; no app/DB needed,'john_doe1',"1. Call is_valid_username() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_021,
+TC-WB-022,is_valid_username() — username rule,Condition,D3: isalnum False and c!='_' (space),Space rejected,helpers.py importable; no app/DB needed,'john doe',"1. Call is_valid_username() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_022,
+TC-WB-023,is_valid_username() — username rule,Condition,D3 = False (hyphen),Hyphen rejected,helpers.py importable; no app/DB needed,'john-doe',"1. Call is_valid_username() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_023,
+TC-WB-024,is_valid_username() — username rule,Condition / Data,D3: str.isalnum() on non-ASCII,Non-ASCII letters rejected (assumes 'letters' = A–Z/a–z as the register hint implies),helpers.py importable; no app/DB needed,'jöhn',"1. Call is_valid_username() with the test data
+2. Compare return value with expected",False,True — str.isalnum() accepts Unicode letters/digits. Spec wording needs clarification,Fail,pytest: test_whitebox.py::test_TC_WB_024,DEF-009
+TC-WB-025,completed_in_last_n_days() — weekly completed count,Branch,D1 (not completed_at) = True,Not completed returns False,helpers.py importable; no app/DB needed,None,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_025,
+TC-WB-026,completed_in_last_n_days() — weekly completed count,Branch,D1 = True (empty string),Empty string returns False,helpers.py importable; no app/DB needed,'',"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_026,
+TC-WB-027,completed_in_last_n_days() — weekly completed count,Branch / Condition,"D3a (age>0) T, D3b (days<n) T",Completed 1 hour ago counts,helpers.py importable; no app/DB needed,now-1h,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_027,
+TC-WB-028,completed_in_last_n_days() — weekly completed count,Branch / BVA,D3b True just inside boundary,6 d 23 h ago counts,helpers.py importable; no app/DB needed,now-6d23h,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_028,
+TC-WB-029,completed_in_last_n_days() — weekly completed count,Branch / BVA,D3b at boundary (age.days == 7),Exactly 7 days ago counts (spec: inclusive),helpers.py importable; no app/DB needed,'2026-11-17 12:00:00',"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",True,"False — uses age.days < n, excludes day N",Fail,pytest: test_whitebox.py::test_TC_WB_029,DEF-007
+TC-WB-030,completed_in_last_n_days() — weekly completed count,Branch / BVA,D3b = False just outside,7 d 1 h ago excluded,helpers.py importable; no app/DB needed,now-7d1h,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_030,
+TC-WB-031,completed_in_last_n_days() — weekly completed count,Branch,D3b = False,8 days ago excluded,helpers.py importable; no app/DB needed,now-8d,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_031,
+TC-WB-032,completed_in_last_n_days() — weekly completed count,Condition,D3a (age>0) = False (future),Future timestamp excluded,helpers.py importable; no app/DB needed,now+1h,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",False,False,Pass,pytest: test_whitebox.py::test_TC_WB_032,
+TC-WB-033,completed_in_last_n_days() — weekly completed count,Condition / BVA,D3a at boundary (age == 0),Task completed in the same second as 'now' counts,helpers.py importable; no app/DB needed,completed_at == now,"1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",True,False — total_seconds() > 0 excludes age 0 (should be >= 0),Fail,pytest: test_whitebox.py::test_TC_WB_033,DEF-008
+TC-WB-034,completed_in_last_n_days() — weekly completed count,Branch,D2 (now is None) = True,Default now=datetime.now() is used,helpers.py importable; no app/DB needed,"real now-1min, now omitted","1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_034,
+TC-WB-035,completed_in_last_n_days() — weekly completed count,Data flow,Parameter n used in D3b,Custom n=1 respected,helpers.py importable; no app/DB needed,"now-23h, n=1","1. Call completed_in_last_n_days() with the test data
+2. Compare return value with expected",True,True,Pass,pytest: test_whitebox.py::test_TC_WB_035,
+TC-WB-036,app.row_to_task() — urgency mapping,Branch,done = True,Completed task shows 'Done' regardless of date,Import app.py,"row: done=1, due=2026-11-19","1. Call row_to_task(row)
+2. Read ['urgency']",'Done','Done',Pass,pytest: test_whitebox.py::test_TC_WB_036_row_to_task_done,
+TC-WB-037,app.row_to_task() — urgency mapping,Branch,done = False → compute_urgency(),Open task delegates to compute_urgency,Import app.py,"row: done=0, due=None","1. Call row_to_task(row)
+2. Read ['urgency']",'No due date','No due date',Pass,pytest: test_whitebox.py::test_TC_WB_037_row_to_task_open,
+TC-WB-038,app.get_category_name(),Branch,not category_id = True,Missing category id returns None,Temp DB initialised,category_id=None,"1. Call get_category_name(db, None)",None,None,Pass,pytest: test_whitebox.py::test_TC_WB_038_category_name_none,
+TC-WB-039,app.get_category_name(),Branch,row is None = True,Unknown category id returns None,Temp DB initialised,category_id=999,"1. Call get_category_name(db, 999)",None,None,Pass,pytest: test_whitebox.py::test_TC_WB_039_category_name_unknown,
+TC-WB-040,app.login_required_web decorator,Branch,not session['user_id'] = True,Unauthenticated request redirected to login,"Temp DB, no session",GET /dashboard,"1. Request /dashboard with test client
+2. Check status and Location",302 → /login,"302, Location: /login",Pass,pytest: test_whitebox.py::test_TC_WB_040_login_required_redirect,
+TC-WB-041,app.register_page() — duplicate username,Branch / Path,Missing decision: no uniqueness check before INSERT,Registering an existing username is rejected,Temp DB; ayamgoreng already registered,ayamgoreng / akusukaayam (twice),"1. POST /register
+2. GET /logout
+3. POST /register again
+4. Count users rows",1 row for ayamgoreng (duplicate rejected),"2 rows (ids 1 and 2). Old task still in DB under user 1 — hidden, not deleted",Fail,pytest: test_whitebox.py::test_TC_WB_041_register_duplicate_username,DEF-003
+TC-WB-042,app.login_page() — duplicate rows,Path / Data flow,SELECT ... fetchone() returns first row only,Second account with same username can log in,Temp DB,"dupuser / firstpass1, then dupuser / secondpass2","1. Register dupuser twice with different passwords
+2. Log in with secondpass2",302 redirect to /,200 + 'Invalid username or password.' — second account unreachable,Fail,pytest: test_whitebox.py::test_TC_WB_042_login_with_duplicate_rows,DEF-003
+TC-WB-043,app.new_task() → index() — due date data flow,Path / Data flow,def: new_task (unvalidated) → use: compute_urgency in index,Invalid stored date does not break task list,Temp DB; logged in,due_date='19999-06-14',"1. POST /tasks/new
+2. GET /",Task list loads (200) or input rejected,Task saved; GET / and /dashboard return 500 on every request; /tasks/new still 200,Fail,pytest: test_whitebox.py::test_TC_WB_043_bad_due_date_breaks_list,DEF-001
