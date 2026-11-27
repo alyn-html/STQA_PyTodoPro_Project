@@ -1,42 +1,33 @@
 # Test Management, Traceability & Defect Consolidation Findings — PyTodo Pro
 
-- **Coordinator:** [Mohammad Haiqal Firdaus Bin Mad Husni (22006428)]
+- **Coordinator:** Mohammad Haiqal Firdaus Bin Mad Husni
 - **Role:** Member 1 — Test Planning, Black-Box & Test Management
-- **Date:** 21 November 2026
-- **Environment:** Local Windows 11 environment, PowerShell (`venv`), Google Chrome, Python 3 / Flask (`http://127.0.0.1:5000/`), GitHub Repository (`STQA_PyTodoPro_Project`)
-- **Application:** PyTodo Pro (Flask + SQLite `pytodo_pro.db`)
-- **Scope:** Project Week 7 — Test Plan Alignment, Requirements Traceability Matrix (RTM), Consolidated Defect Management, and Planned-vs-Actual Execution Evaluation
-- **Baseline Test Account:** `ayamgoreng` (Password: `akusukaayam`)
+- **Environment:** Local Windows 11 environment, PowerShell (`venv`), Google Chrome 153, Python 3 / Flask (`http://127.0.0.1:5000/`), GitHub Codespaces, GitHub Repository (`STQA_PyTodoPro_Project`)[cite: 4, 5]
+- **Application:** PyTodo Pro (Flask + SQLite `pytodo_pro.db`)[cite: 4]
+- **Scope:** Project Week 7 — Consolidated Test Plan Alignment, Cross-Phase Requirements Traceability Matrix (RTM), Defect Deduplication & Lifecycle Management, and Planned-vs-Actual Execution Evaluation[cite: 5, 7]
 
 ---
 
-## 1. Overview of Test Management & Consolidation
-As part of Project Week 7 test management activities, all testing artifacts produced during manual black-box execution (`01_Black_Box`) were consolidated into a unified traceability and defect-tracking framework inside `07_Test_Management/`. Rather than treating test planning as a static pre-execution document, the formal Software Test Plan (`test_plan.md`) and Requirements Traceability Matrix (`rtm.csv`) were updated using empirical evidence gathered during browser execution. Every requirement (`REQ-01` through `REQ-09`) was mapped to its corresponding test cases (`TC-BB-001` through `TC-BB-028`), execution outcomes, visual screenshot references, and defect records (`DEF-001` through `DEF-005`) so that cross-artifact consistency is maintained for the final quality evaluation (`08_Final_QA_Report`).
+## 1. Overview of Cross-Phase Consolidation
+As part of Project Week 7 test management activities, all manual and automated testing artifacts produced across the entire project—Black-Box Web UI (`01_Black_Box`), White-Box Coverage (`02_White_Box_Coverage`), Special Testing (`03_Special_Testing`), Web & REST API (`04_Web_API`), Security & Performance (`05_Security_Performance`), and Automated Regression (`06_Automation_Regression`)—were consolidated into `07_Test_Management/`[cite: 5, 7]. The formal Software Test Plan (`test_planning.md`), cross-phase Requirements Traceability Matrix (`rtm.csv`), Consolidated Defect Log (`consolidated_defect_log.csv`), and Test Execution Summary (`execution_summary.md`) were reconciled using empirical execution evidence so that every requirement, test case ID, and defect ID aligns consistently for the final QA evaluation report (`08_Final_QA_Report`)[cite: 4, 5].
 
 ---
 
 ## 2. Key Test Management & Governance Findings
 
-### Finding 1: Requirements Traceability Coverage & Failure Concentration (`rtm.csv`)
-Mapping all 28 black-box test cases against the nine functional Web UI requirements (`REQ-01` to `REQ-09`) confirmed 100% forward and backward traceability across every user-facing feature. Six of the nine requirements (`REQ-02` User Login, `REQ-03` User Logout, `REQ-04` Task Listing/Filter/Search, `REQ-07` Delete Task, and `REQ-09` Summary Dashboard) achieved a 100% pass rate with zero confirmed functional defects. In contrast, all five confirmed defects clustered around three specific functional areas: User Registration (`REQ-01`), Task Creation/Editing (`REQ-05` and `REQ-06`), and Task Urgency Classification (`REQ-08`). This distribution validates the Pareto defect-clustering principle and confirms that input validation and date-boundary logic represent the primary stability risks in PyTodo Pro.
+### Finding 1: Cross-Phase Requirements Traceability & Defect Clustering (`rtm.csv`)
+Mapping all 138 planned manual test cases and 133 automated PyTest cases across the nine functional Web UI requirements (`REQ-01` through `REQ-09`) and cross-cutting Accessibility/Compatibility criteria confirmed complete forward and backward traceability[cite: 5]. Only `REQ-02` (User Login) passed across all manual and automated test layers with zero defects[cite: 5]. Every other requirement exhibited at least one functional, structural, security, or accessibility defect, with heavy defect clustering in `REQ-01` User Registration (6 unique defects), `REQ-05` Create Task (4 unique defects), and Accessibility/Viewport Compatibility (7 unique defects)[cite: 5].
 
-### Finding 2: Consolidated Defect Severity & Prioritization Analysis (`consolidated_defect_log.csv`)
-All five defects discovered during manual black-box testing were standardized under the 12-field ISTQB-aligned defect schema and classified by both technical **Severity** and remediation **Priority**. Two defects were classified as **Critical Severity / High Priority**: `DEF-001` (an unhandled Python `ValueError` HTTP 500 traceback crash when submitting a five-digit year such as `19999-06-14` in `/tasks/new` or `/tasks/<id>/edit`, which also disrupts return navigation) and `DEF-003` (duplicate account registration with existing credentials silently overwriting prior user records and wiping saved tasks). Two defects were classified as **Major Severity**: `DEF-002` (High Priority — tasks due on the exact current date $T$ are mislabeled as `Overdue` instead of `Due Today`) and `DEF-004` (Medium Priority — registering a second unique account within the same browser instance is blocked). One defect was classified as **Minor Severity / Low Priority**: `DEF-005` (registration accepts purely lowercase passwords without alphanumeric or symbol complexity rules).
+### Finding 2: Defect Deduplication & Master Register Reconciliation (`consolidated_defect_log.csv`)
+Across all testing phases, 28 defect identifiers were initially logged (`DEF-001` through `DEF-026`, `DEF-API-001`, `SEC-DEF-001`, and `SEC-DEF-002`)[cite: 5]. Cross-phase root-cause verification identified two exact duplicates: `DEF-004` (where registering a second account in the same browser was blocked) was confirmed as a symptom of `DEF-006` (`is_valid_password()` enforcing strict `len(password) > 8` and rejecting valid 8-character passwords), and `SEC-DEF-002` was confirmed as a duplicate of `DEF-API-001` (submitting a numeric task title to `POST /api/tasks` causing an unhandled HTTP 500 error)[cite: 5]. Removing these two duplicates yielded **26 unique confirmed defects**, distributed as **4 Critical** (15.4%), **3 Major** (11.5%), **10 Moderate** (38.5%), and **9 Minor** (34.6%)[cite: 5].
 
-### Finding 3: Defect Lifecycle Governance Under Non-Modification Constraints
-In accordance with the course quality evaluation guidelines prohibiting modification of PyTodo Pro's application source code (`app.py`, `helpers.py`, and HTML templates), no code patches were applied during testing. Consequently, all five confirmed defects (`DEF-001` through `DEF-005`) remain formally tracked in `Open` status within `consolidated_defect_log.csv` with full reproduction steps and screenshot links (`01_Black_Box/screenshots/...`) so that downstream phases (`08_Final_QA_Report` and `09_Presentation`) can accurately report unresolved residual risks. Additionally, the consolidated log structure is aligned with teammate findings in `04_Web_API` and `05_Security_Performance` to prevent duplicate numbering across repository branches.
+### Finding 3: Defect Lifecycle Governance Under Non-Modification Rules
+In accordance with course evaluation rules prohibiting modification of PyTodo Pro's source code (`app.py`, `helpers.py`, and templates), no code patches were applied during testing[cite: 5]. Consequently, all 26 unique defects remain formally tracked in `Open` status in `consolidated_defect_log.csv` with reproducible steps and evidence links, while automated regression tests in `06_Automation_Regression` encode these open defects using `@pytest.mark.xfail(strict=True)` so that any future fix will immediately surface as an unexpected pass (`XPASS`)[cite: 4, 5].
 
-### Finding 4: Planned-versus-Actual Execution Variance (`execution_summary.md`)
-During initial test planning, 21 core black-box test cases (`TC-BB-001` to `TC-BB-021`) were designed across Equivalence Partitioning, Boundary Value Analysis, Decision Tables, and State Transitions. During execution, seven additional exploratory and boundary-refinement test cases (`TC-BB-022` to `TC-BB-028`) were added to verify exact three-value character length boundaries on registration (`3–20` username characters, `min 8` password characters), special-character rejection, whitespace-only task titles, edit-form date crashes, and dashboard metric updates upon task deletion. Across all 28 executed test cases (100% execution rate), 23 passed (82.14%), 5 failed (17.86%), and 0 were blocked.
+### Finding 4: Planned-versus-Actual Execution & Automation Coverage (`execution_summary.md`)
+Out of **138 planned manual test cases**, **133 were executed (96.38%)**, yielding **102 passed (76.69%)**, **30 failed (22.56%)**, **1 needing policy review (`API-002`, 0.75%)**, and **5 marked `Not Run`** due to environment constraints (unavailable Firefox, Edge, and Safari browsers for `TC-CMP-002` to `TC-CMP-004`, missing `static/style.css` returning HTTP 404 for `TC-ACC-014`, and an unscheduled moderated walkthrough for `TC-USA-006`)[cite: 5]. In addition, **105 of 113 automatable manual test cases (92.92%)** were converted into the 133-test automated PyTest suite with **99.05% oracle consistency**, uncovering five additional API and session-caching defects (`DEF-022` through `DEF-026`)[cite: 5].
 
 ---
 
 ## 3. Summary of Cross-Artifact Alignment & Readiness
-All required Week 7 test management deliverables—`test_plan.md`, `rtm.csv`, `consolidated_defect_log.csv`, `execution_summary.md`, and `test_management_findings.md`—are synchronized with `01_Black_Box/`. Every Test Case ID (`TC-BB-001` to `TC-BB-028`), Defect ID (`DEF-001` to `DEF-005`), severity label (`Critical`, `Major`, `Moderate`, `Minor`), status value (`Open`), and screenshot path resolves consistently across both folders, providing a complete audit trail for final SQA reporting.
-```[cite: 21, 22, 23, 25]
-
-### How to Add This to GitHub
-1. Open the **`07_Test_Management`** folder in your GitHub repository[cite: 21].
-2. Click **Add file** → **Create new file**.
-3. Name the file `test_management_findings.md`, paste the Markdown content above (after adding your full name and student ID), and click **Commit changes**.
-4. *(Optional)* Add `- test_management_findings.md — Narrative summary of traceability coverage, defect severity/lifecycle governance, and planned-versus-actual execution findings.` to `07_Test_Management/README.md`[cite: 21].
+All Week 7 test management files—`README.md`, `test_planning.md`, `rtm.csv`, `consolidated_defect_log.csv`, `execution_summary.md`, and `test_management_findings.md`—are now synchronized across all repository branches (`01_Black_Box` through `06_Automation_Regression`) and aligned with Section 7.0 of the Final QA Report (`08_Final_QA_Report`)[cite: 4, 5].
