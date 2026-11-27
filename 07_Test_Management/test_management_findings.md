@@ -1,6 +1,6 @@
 # Test Management, Traceability & Defect Consolidation Findings — PyTodo Pro
 
-- **Coordinator:** [Your Full Name (Student ID)]
+- **Coordinator:** [Mohammad Haiqal Firdaus Bin Mad Husni (22006428)]
 - **Role:** Member 1 — Test Planning, Black-Box & Test Management
 - **Date:** 21 November 2026
 - **Environment:** Local Windows 11 environment, PowerShell (`venv`), Google Chrome, Python 3 / Flask (`http://127.0.0.1:5000/`), GitHub Repository (`STQA_PyTodoPro_Project`)
